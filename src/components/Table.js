@@ -59,6 +59,17 @@ export default function Table() {
     setValueFilter('0');
   };
 
+  const removeFilters = () => {
+    setFilterByNumericValues([]);
+  };
+
+  const remove = ({ target }) => {
+    let newFilters = filterByNumericValues;
+    newFilters = newFilters.filter((f) => f.column !== target.value);
+    setFilterByNumericValues(newFilters);
+    setOptions([...options, target.value]);
+  };
+
   return (
     <>
       <input
@@ -98,6 +109,28 @@ export default function Table() {
       >
         add_filter
       </button>
+      <button
+        data-testid="button-remove-filters"
+        type="button"
+        onClick={ removeFilters }
+      >
+        remove_filters
+      </button>
+      <ul>
+        { filterByNumericValues.map((filter, i) => (
+          <div key={ i } data-testid="filter">
+            <span>
+              {`${filter.column} ${filter.comparison} ${filter.value}`}
+            </span>
+            <button
+              value={ filter.column }
+              type="button"
+              onClick={ remove }
+            >
+              remove
+            </button>
+          </div>))}
+      </ul>
       <table>
         <thead>
           <tr>
