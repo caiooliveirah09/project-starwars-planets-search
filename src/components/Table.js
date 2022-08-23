@@ -10,6 +10,8 @@ export default function Table() {
   const [newPlanets, setNewPlanets] = useState([]);
   const [filterByNumericValues, setFilterByNumericValues] = useState([]);
   const [finalPlanets, setFinalPlanets] = useState([]);
+  const [options, setOptions] = useState(['population',
+    'orbital_period', 'diameter', 'rotation_period', 'surface_water']);
 
   // component did update planets
   useEffect(() => {
@@ -27,6 +29,7 @@ export default function Table() {
 
   useEffect(() => {
     let newNewPlanets = newPlanets;
+    let newOptions = options;
     filterByNumericValues.forEach((f) => {
       newNewPlanets = newNewPlanets.filter((planet) => {
         if (f.comparison === 'maior que') {
@@ -38,7 +41,11 @@ export default function Table() {
         return (Number(planet[f.column]) === Number(f.value));
       });
     });
+    filterByNumericValues.forEach((f) => {
+      newOptions = newOptions.filter((option) => f.column !== option);
+    });
     setFinalPlanets(newNewPlanets);
+    setOptions(newOptions);
   }, [filterByNumericValues, newPlanets]);
 
   const addFilter = () => {
@@ -66,11 +73,7 @@ export default function Table() {
         value={ columnFilter }
         onChange={ ({ target }) => { setColumnFilter(target.value); } }
       >
-        <option value="population">population</option>
-        <option value="orbital_period">orbital_period</option>
-        <option value="diameter">diameter</option>
-        <option value="rotation_period">rotation_period</option>
-        <option value="surface_water">surface_water</option>
+        { options.map((opt, i) => <option key={ i } value={ opt }>{opt}</option>)}
       </select>
       <select
         data-testid="comparison-filter"
